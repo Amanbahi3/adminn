@@ -7,115 +7,79 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f7f7f7;
+      margin: 20px;
     }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    input, button {
-      margin: 5px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-    input {
-      width: calc(100% - 22px);
-    }
-    button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      padding: 10px;
-      margin: 5px 0;
-      background-color: white;
-      border: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
+    .data-entry {
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
+
   <h1>Admin Panel</h1>
-  <div>
-    <input id="nameInput" placeholder="Name" />
-    <input id="dateInput" type="date" placeholder="Date" />
-    <input id="timeInput" type="time" placeholder="Time" />
-    <input id="locationInput" placeholder="Location" />
-    <button id="saveButton">Add Entry</button>
-  </div>
-  <ul id="entriesList"></ul>
+  
+  <!-- Form to Add Data -->
+  <h2>Add New Entry</h2>
+  <form id="addForm">
+    <input type="text" id="entryName" placeholder="Enter Name" required />
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <!-- List of Data Entries -->
+  <h2>Entries</h2>
+  <ul id="dataList"></ul>
+
   <script>
-    const API_URL = 'https://backend-uig1.onrender.com';
-
-    async function loadEntries() {
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        const entriesList = document.getElementById('entriesList');
-        entriesList.innerHTML = '';
-
-        data.forEach((entry, index) => {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `
-            <span>${entry.name} | ${entry.date} | ${entry.time} | ${entry.location}</span>
-            <button onclick="deleteEntry(${index})">Delete</button>
-          `;
-          entriesList.appendChild(listItem);
+    // Function to fetch and display data entries
+    function loadEntries() {
+      fetch('https://backend-uig1.onrender.com/api/data')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const dataList = document.getElementById('dataList');
+          dataList.innerHTML = ''; // Clear the list first
+          data.forEach((entry, index) => {
+            const li = document.createElement('li');
+            li.textContent = entry.name;
+            dataList.appendChild(li);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading entries:', error);
         });
-      } catch (error) {
-        console.error('Error loading entries:', error);
-      }
     }
 
-    async function addEntry() {
-      const name = document.getElementById('nameInput').value;
-      const date = document.getElementById('dateInput').value;
-      const time = document.getElementById('timeInput').value;
-      const location = document.getElementById('locationInput').value;
-
-      if (!name || !date || !time || !location) {
-        alert('All fields are required.');
-        return;
-      }
-
-      const newEntry = { name, date, time, location };
-
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEntry)
+    // Function to add a new entry
+    document.getElementById('addForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      
+      const entryName = document.getElementById('entryName').value;
+      if (entryName.trim() === '') return; // Prevent submitting empty entries
+      
+      fetch('https://backend-27of.onrender.com/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: entryName }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Entry added:', data);
+          loadEntries(); // Reload the entries after adding a new one
+        })
+        .catch(error => {
+          console.error('Error adding entry:', error);
         });
-        loadEntries();
-      } catch (error) {
-        console.error('Error adding entry:', error);
-      }
-    }
+    });
 
-    async function deleteEntry(index) {
-      try {
-        await fetch(`${API_URL}/${index}`, {
-          method: 'DELETE'
-        });
-        loadEntries();
-      } catch (error) {
-        console.error('Error deleting entry:', error);
-      }
-    }
-
-    document.getElementById('saveButton').addEventListener('click', addEntry);
+    // Load entries on page load
     loadEntries();
   </script>
+
 </body>
 </html>
