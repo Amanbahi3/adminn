@@ -12,6 +12,9 @@
     .data-entry {
       margin-bottom: 10px;
     }
+    .entry-form input {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -20,8 +23,11 @@
   
   <!-- Form to Add Data -->
   <h2>Add New Entry</h2>
-  <form id="addForm">
+  <form id="addForm" class="entry-form">
     <input type="text" id="entryName" placeholder="Enter Name" required />
+    <input type="date" id="entryDate" required />
+    <input type="time" id="entryTime" required />
+    <input type="text" id="entryLocation" placeholder="Enter Location" required />
     <button type="submit">Add Entry</button>
   </form>
 
@@ -32,7 +38,7 @@
   <script>
     // Function to fetch and display data entries
     function loadEntries() {
-      fetch('https://backend-uig1.onrender.com/api/data')
+      fetch('https://backend-xl7p.onrender.com/api/data')
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -44,7 +50,7 @@
           dataList.innerHTML = ''; // Clear the list first
           data.forEach((entry, index) => {
             const li = document.createElement('li');
-            li.textContent = entry.name;
+            li.innerHTML = `<strong>Name:</strong> ${entry.name}, <strong>Date:</strong> ${entry.date}, <strong>Time:</strong> ${entry.time}, <strong>Location:</strong> ${entry.location}`;
             dataList.appendChild(li);
           });
         })
@@ -58,14 +64,19 @@
       event.preventDefault();
       
       const entryName = document.getElementById('entryName').value;
-      if (entryName.trim() === '') return; // Prevent submitting empty entries
+      const entryDate = document.getElementById('entryDate').value;
+      const entryTime = document.getElementById('entryTime').value;
+      const entryLocation = document.getElementById('entryLocation').value;
       
+      if (entryName.trim() === '' || entryDate === '' || entryTime === '' || entryLocation.trim() === '') return;
+
+      // Send the data to the backend
       fetch('https://backend-27of.onrender.com/api/data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: entryName }),
+        body: JSON.stringify({ name: entryName, date: entryDate, time: entryTime, location: entryLocation }),
       })
         .then(response => response.json())
         .then(data => {
