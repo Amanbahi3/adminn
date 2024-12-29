@@ -26,10 +26,25 @@
     button:hover {
       background-color: darkred;
     }
+    input, button {
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Admin Panel</h1>
+
+  <!-- Form to add new entry -->
+  <h2>Add New Entry</h2>
+  <form id="add-entry-form">
+    <input type="text" id="name" placeholder="Name" required><br>
+    <input type="date" id="date" required><br>
+    <input type="time" id="time" required><br>
+    <input type="text" id="location" placeholder="Location" required><br>
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <h2>Entries</h2>
   <table id="data-table">
     <thead>
       <tr>
@@ -90,6 +105,38 @@
         console.error('Error deleting entry:', error);
       }
     }
+
+    // Function to handle the form submission and add a new entry
+    async function addEntry(event) {
+      event.preventDefault(); // Prevent page refresh
+
+      const name = document.getElementById('name').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const location = document.getElementById('location').value;
+
+      const newEntry = { name, date, time, location };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newEntry),
+        });
+
+        if (!response.ok) throw new Error('Failed to add entry');
+        
+        // Reload entries after successful addition
+        loadEntries();
+      } catch (error) {
+        console.error('Error adding entry:', error);
+      }
+    }
+
+    // Attach the form submit handler
+    document.getElementById('add-entry-form').addEventListener('submit', addEntry);
 
     // Load entries on page load
     window.onload = loadEntries;
