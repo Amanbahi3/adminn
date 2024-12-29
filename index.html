@@ -4,17 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
   <h1>Admin Panel</h1>
   <div>
     <input id="nameInput" placeholder="Name" />
-    <input id="dateInput" type="date" placeholder="Date" />
-    <input id="timeInput" type="time" placeholder="Time" />
+    <input id="dateInput" type="date" />
+    <input id="timeInput" type="time" />
     <input id="locationInput" placeholder="Location" />
-    <button id="saveButton">Add Entry</button>
+    <button id="addButton">Add Entry</button>
   </div>
-  <ul id="entriesList"></ul>
-  <script src="admin.js"></script>
+  <ul id="dataList"></ul>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api/data'; // Update with deployed backend URL
+
+    const nameInput = document.getElementById('nameInput');
+    const dateInput = document.getElementById('dateInput');
+    const timeInput = document.getElementById('timeInput');
+    const locationInput = document.getElementById('locationInput');
+    const addButton = document.getElementById('addButton');
+    const dataList = document.getElementById('dataList');
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        renderData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    const renderData = (data) => {
+      dataList.innerHTML = '';
+      data.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>Name:</strong> ${entry.name} <br />
+          <strong>Date:</strong> ${entry.date} <br />
+          <strong>Time:</strong> ${entry.time} <br />
+          <strong>Location:</strong> ${entry.location} <br />
+          <button onclick="deleteEntry(${index})">Delete</button>
+        `;
+        dataList.appendChild(li);
+      });
+    };
+
+    const addEntry = async () => {
+      const newEntry = {
+        name: nameInput.value,
+        date: dateInput.value,
+        time: timeInput.value,
+        location: locationInput.value,
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newEntry),
+        });
+
+        if (response.ok) {
+          nameInput.value = '';
+          dateInput.value = '';
+          timeInput.value = '';
+          locationInput.value = '';
+          fetchData();
+        } else {
+          console.error('Error adding entry:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error adding entry:', error);
+      }
+    };
+
+    const deleteEntry = async (index) => {
+      try {
+        const response = await fetch(`${API_URL}/${index}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          fetchData();
+        } else {
+          console.error('Error deleting entry:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error deleting entry:', error);
+      }
+    };
+
+    addButton.addEventListener('click', addEntry);
+
+    fetchData();
+  </script>
 </body>
 </html>
