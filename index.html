@@ -4,29 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be populated here -->
+    </tbody>
+  </table>
+
   <script>
-    // Function to load entries from the server
+    const apiUrl = 'https://backend-xl7p.onrender.com/api/data'; // Replace with your backend URL
+
+    // Function to load data from the backend
     async function loadEntries() {
       try {
-        const response = await fetch('https://backend-kshv.onrender.com/api/data');
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
         const data = await response.json();
-        
-        const entriesContainer = document.getElementById('entries');
-        entriesContainer.innerHTML = ''; // Clear the current entries
-        
-        // Display entries with a delete button
+        const tableBody = document.querySelector('#data-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        // Populate the table with the fetched data
         data.forEach((entry, index) => {
-          const entryDiv = document.createElement('div');
-          entryDiv.classList.add('entry');
-          entryDiv.innerHTML = `
-            <p>Name: ${entry.name}</p>
-            <p>Date: ${entry.date}</p>
-            <p>Time: ${entry.time}</p>
-            <p>Location: ${entry.location}</p>
-            <button onclick="deleteEntry(${index})">Delete</button>
-            <hr>
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${entry.name}</td>
+            <td>${entry.date}</td>
+            <td>${entry.time}</td>
+            <td>${entry.location}</td>
+            <td><button onclick="deleteEntry(${index})">Delete</button></td>
           `;
-          entriesContainer.appendChild(entryDiv);
+          tableBody.appendChild(row);
         });
       } catch (error) {
         console.error('Error loading entries:', error);
@@ -36,29 +84,21 @@
     // Function to delete an entry
     async function deleteEntry(index) {
       try {
-        const response = await fetch(`https://backend-xl7p.onrender.com/api/data/${index}`, {
+        const response = await fetch(`${apiUrl}/${index}`, {
           method: 'DELETE',
         });
-
-        if (response.ok) {
-          alert('Entry deleted successfully');
-          loadEntries(); // Reload the entries after deletion
-        } else {
-          alert('Error deleting entry');
-        }
+        
+        if (!response.ok) throw new Error('Failed to delete entry');
+        
+        // Reload the entries after successful deletion
+        loadEntries();
       } catch (error) {
         console.error('Error deleting entry:', error);
       }
     }
 
-    // Call loadEntries when the page loads
+    // Load entries on page load
     window.onload = loadEntries;
   </script>
-</head>
-<body>
-  <h1>Admin Panel</h1>
-  <div id="entries">
-    <!-- Entries will be loaded here -->
-  </div>
 </body>
 </html>
