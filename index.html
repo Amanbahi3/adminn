@@ -230,7 +230,14 @@
 
     async function loadWebsiteContent() {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*', // This should be set in the Apps Script as well.
+          },
+        });
+
         if (!response.ok) throw new Error('Failed to fetch data');
 
         const data = await response.json();
@@ -241,7 +248,7 @@
           const block = document.createElement('div');
           block.className = 'info-block';
           
-          block.innerHTML = `
+          block.innerHTML = ` 
             <div class="info-section">
               <div class="info-label">Name</div>
               <div class="info-value">${entry.name}</div>
@@ -267,50 +274,6 @@
         document.getElementById('contentContainer').textContent = 'Error loading content.';
       }
     }
-
-    function animateValue(id, start, end, duration) {
-      if (duration <= 0) return;
-
-      let obj = document.getElementById(id);
-      let range = end - start;
-      let minTimer = 50;
-      let stepTime = Math.max(Math.abs(Math.floor(duration / range)), minTimer);
-      let startTime = new Date().getTime();
-      let endTime = startTime + duration;
-      let timer;
-
-      function run() {
-        let now = new Date().getTime();
-        let remaining = Math.max((endTime - now) / duration, 0);
-        let value = Math.round(end - (remaining * range));
-        obj.innerHTML = value + "+";
-        if (value == end) {
-          clearInterval(timer);
-        }
-      }
-
-      timer = setInterval(run, stepTime);
-      run();
-    }
-
-    const statsSection = document.querySelector('.stats-section');
-    let animated = false;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !animated) {
-          statsSection.classList.add('visible');
-          animateValue("meals-served", 0, 10000, 3000);
-          animateValue("volunteers", 0, 50000, 4000);
-          animateValue("communities", 0, 50, 2000);
-          animated = true;
-        }
-      });
-    }, {
-      threshold: 0.1
-    });
-
-    observer.observe(statsSection);
 
     loadWebsiteContent();
   </script>
