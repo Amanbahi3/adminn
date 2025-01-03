@@ -3,206 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <title>Admin Panel - Punya Pantry</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: #333;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: #f4f4f4;
+      padding: 2rem;
     }
+
     .container {
-      background: white;
-      padding: 20px;
-      margin: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 80%;
-      max-width: 600px;
+      max-width: 800px;
+      width: 100%;
     }
+
+    h1 {
+      color: #FF8C00;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
     form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
     }
-    input, button {
-      padding: 10px;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+
     button {
-      background-color: #007bff;
+      background: #FF8C00;
       color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
     }
+
     button:hover {
-      background-color: #0056b3;
+      background: #e67e22;
     }
+
+    .events-list {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
     .event {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      padding: 1rem 0;
     }
+
     .event:last-child {
       border-bottom: none;
     }
-    .login-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+
+    .event h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .event p {
+      margin-bottom: 0.5rem;
+    }
+
+    .event button {
+      margin-right: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="loginContainer">
-    <h1>Admin Login</h1>
-    <form id="loginForm" class="login-form">
-      <label for="email">Email:</label>
-      <input type="email" id="email" required>
-      <label for="password">Password:</label>
-      <input type="password" id="password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-
-  <div class="container" id="adminContainer" style="display: none;">
+  <div class="container">
     <h1>Admin Panel</h1>
-    <form id="eventForm">
-      <label for="eventName">Name:</label>
-      <input type="text" id="eventName" required>
-      <label for="eventDate">Date:</label>
-      <input type="date" id="eventDate" required>
-      <label for="eventTime">Time:</label>
-      <input type="time" id="eventTime" required>
-      <label for="eventLocation">Location:</label>
-      <input type="text" id="eventLocation" required>
+
+    <!-- Add Event Form -->
+    <form id="addEventForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" required>
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" required>
+
+      <label for="location">Location:</label>
+      <input type="text" id="location" required>
+
       <button type="submit">Add Event</button>
     </form>
-    <h2>Events List</h2>
-    <div id="eventsList"></div>
+
+    <!-- Events List -->
+    <div class="events-list" id="eventsList">
+      <h2>Events</h2>
+      <!-- Events will be dynamically inserted here -->
+    </div>
   </div>
 
-  <script type="module">
-    // Import Firebase functions
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+  <script>
+    const backendUrl = 'https://backend-t3fk.onrender.com';
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD1NcfC-IjVXwaxMZG0kjn35L2zT6C5UJk",
-      authDomain: "bhandra-1fd1b.firebaseapp.com",
-      projectId: "bhandra-1fd1b",
-      storageBucket: "bhandra-1fd1b.appspot.com",
-      messagingSenderId: "643089692619",
-      appId: "1:643089692619:web:1d8d430ce550ab19d1e84e",
-      measurementId: "G-RJNF23H1J8"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    // Login
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        document.getElementById("loginContainer").style.display = "none";
-        document.getElementById("adminContainer").style.display = "block";
-        fetchEvents(); // Fetch events after login
-      } catch (error) {
-        alert("Login failed: " + error.message);
-      }
-    });
-
-    // Add new event
-    document.getElementById("eventForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("eventName").value;
-      const date = document.getElementById("eventDate").value;
-      const time = document.getElementById("eventTime").value;
-      const location = document.getElementById("eventLocation").value;
-
-      try {
-        await addDoc(collection(db, "events"), {
-          name: name,
-          date: date,
-          time: time,
-          location: location
-        });
-        alert("Event added successfully!");
-        fetchEvents(); // Refresh the events list
-      } catch (error) {
-        console.error("Error adding document: ", error);
-      }
-    });
-
-    // Fetch and display all events
+    // Fetch and display events
     async function fetchEvents() {
-      const eventsList = document.getElementById("eventsList");
-      eventsList.innerHTML = ""; // Clear existing content
+      try {
+        const response = await fetch(`${backendUrl}/events`);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const events = await response.json();
+        displayEvents(events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
 
-      const querySnapshot = await getDocs(collection(db, "events"));
-      querySnapshot.forEach((doc) => {
-        const event = doc.data();
-        const eventDiv = document.createElement("div");
-        eventDiv.className = "event";
+    // Display events on the page
+    function displayEvents(events) {
+      const eventsList = document.getElementById('eventsList');
+      eventsList.innerHTML = '<h2>Events</h2>'; // Clear existing content
+
+      events.forEach((event) => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = 'event';
+
         eventDiv.innerHTML = `
-          <p><strong>Name:</strong> ${event.name}</p>
+          <h3>${event.name}</h3>
           <p><strong>Date:</strong> ${event.date}</p>
           <p><strong>Time:</strong> ${event.time}</p>
           <p><strong>Location:</strong> ${event.location}</p>
-          <button onclick="updateEvent('${doc.id}')">Update</button>
-          <button onclick="deleteEvent('${doc.id}')">Delete</button>
+          <button onclick="updateEvent('${event.id}', '${event.name}', '${event.date}', '${event.time}', '${event.location}')">Update</button>
+          <button onclick="deleteEvent('${event.id}')">Delete</button>
         `;
+
         eventsList.appendChild(eventDiv);
       });
     }
 
-    // Update event
-    window.updateEvent = async (id) => {
-      const name = prompt("Enter new name:");
-      const date = prompt("Enter new date (YYYY-MM-DD):");
-      const time = prompt("Enter new time (HH:MM):");
-      const location = prompt("Enter new location:");
+    // Add a new event
+    async function addEvent(name, date, time, location) {
+      try {
+        const response = await fetch(`${backendUrl}/events`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, date, time, location }),
+        });
+        if (!response.ok) throw new Error('Failed to add event');
+        const result = await response.text();
+        console.log(result);
+        fetchEvents(); // Refresh the events list
+      } catch (error) {
+        console.error('Error adding event:', error);
+      }
+    }
 
-      if (name && date && time && location) {
+    // Update an event
+    async function updateEvent(id, name, date, time, location) {
+      const newName = prompt('Enter new name:', name);
+      const newDate = prompt('Enter new date:', date);
+      const newTime = prompt('Enter new time:', time);
+      const newLocation = prompt('Enter new location:', location);
+
+      if (newName && newDate && newTime && newLocation) {
         try {
-          await updateDoc(doc(db, "events", id), {
-            name: name,
-            date: date,
-            time: time,
-            location: location
+          const response = await fetch(`${backendUrl}/events/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newName, date: newDate, time: newTime, location: newLocation }),
           });
-          alert("Event updated successfully!");
+          if (!response.ok) throw new Error('Failed to update event');
+          const result = await response.text();
+          console.log(result);
           fetchEvents(); // Refresh the events list
         } catch (error) {
-          console.error("Error updating document: ", error);
+          console.error('Error updating event:', error);
         }
       }
-    };
+    }
 
-    // Delete event
-    window.deleteEvent = async (id) => {
-      if (confirm("Are you sure you want to delete this event?")) {
+    // Delete an event
+    async function deleteEvent(id) {
+      if (confirm('Are you sure you want to delete this event?')) {
         try {
-          await deleteDoc(doc(db, "events", id));
-          alert("Event deleted successfully!");
+          const response = await fetch(`${backendUrl}/events/${id}`, {
+            method: 'DELETE',
+          });
+          if (!response.ok) throw new Error('Failed to delete event');
+          const result = await response.text();
+          console.log(result);
           fetchEvents(); // Refresh the events list
         } catch (error) {
-          console.error("Error deleting document: ", error);
+          console.error('Error deleting event:', error);
         }
       }
-    };
+    }
+
+    // Add event form submission
+    document.getElementById('addEventForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const location = document.getElementById('location').value;
+      addEvent(name, date, time, location);
+    });
+
+    // Fetch events on page load
+    fetchEvents();
   </script>
 </body>
 </html>
