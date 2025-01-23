@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 600px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .event {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .event:last-child {
+      border-bottom: none;
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .event-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="loginContainer">
+    <h1>Admin Login</h1>
+    <form id="loginForm" class="login-form">
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div class="container" id="adminContainer" style="display: none;">
+    <h1>Admin Panel</h1>
+    <form id="eventForm">
+      <label for="eventName">Name:</label>
+      <input type="text" id="eventName" required>
+      <label for="eventDate">Date:</label>
+      <input type="date" id="eventDate" required>
+      <label for="eventTime">Time:</label>
+      <input type="time" id="eventTime" required>
+      <label for="eventLocation">Location:</label>
+      <input type="text" id="eventLocation" required>
+      <label for="eventImage">Image:</label>
+      <input type="file" id="eventImage" accept="image/*" required>
+      <button type="submit">Add Event</button>
+    </form>
+    <h2>Events List</h2>
+    <div id="eventsList"></div>
+  </div>
+
+  <script type="module">
+    // Import Firebase functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1NcfC-IjVXwaxMZG0kjn35L2zT6C5UJk",
+      authDomain: "bhandra-1fd1b.firebaseapp.com",
+      projectId: "bhandra-1fd1b",
+      storageBucket: "bhandra-1fd1b.appspot.com",
+      messagingSenderId: "643089692619",
+      appId: "1:643089692619:web:1d8d430ce550ab19d1e84e",
+      measurementId: "G-RJNF23H1J8"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    // Login
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("adminContainer").style.display = "block";
+        fetchEvents(); // Fetch events after login
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
+
+    // Add new event
+    document.getElementById("eventForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("eventName").value;
+      const date = document.getElementById("eventDate").value;
+      const time = document.getElementById("eventTime").value;
+      const location = document.getElementById("eventLocation").value;
+      const imageFile = document.getElementById("eventImage").files[0];
+
+      if (!name || !date || !time || !location || !imageFile) {
+        alert("Please fill all fields and upload an image.");
+        return;
+      }
+
+      try {
+        // Upload image to Firebase Storage
+        const storageRef = ref(storage, `event-images/${imageFile.name}`);
+        await uploadBytes(storageRef, imageFile);
+        const imageUrl = await getDownloadURL(storageRef);
+
+        // Add event data to Firestore
+        await addDoc(collection(db, "events"), {
+          name: name,
+          date: date,
+          time: time,
+          location: location,
+          imageUrl: imageUrl
+        });
+
+        alert("Event added successfully!");
+        fetchEvents(); // Refresh the events list
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("Failed to add event. Please try again.");
+      }
+    });
+
+    // Fetch and display all events
+    async function fetchEvents() {
+      const eventsList = document.getElementById("eventsList");
+      eventsList.innerHTML = ""; // Clear existing content
+
+      const querySnapshot = await getDocs(collection(db, "events"));
+      querySnapshot.forEach((doc) => {
+        const event = doc.data();
+        const eventDiv = document.createElement("div");
+        eventDiv.className = "event";
+        eventDiv.innerHTML = `
+          <p><strong>Name:</strong> ${event.name}</p>
+          <p><strong>Date:</strong> ${event.date}</p>
+          <p><strong>Time:</strong> ${event.time}</p>
+          <p><strong>Location:</strong> ${event.location}</p>
+          <img src="${event.imageUrl}" alt="Event Image" class="event-image">
+          <button onclick="updateEvent('${doc.id}')">Update</button>
+          <button onclick="deleteEvent('${doc.id}')">Delete</button>
+        `;
+        eventsList.appendChild(eventDiv);
+      });
+    }
+
+    // Update event
+    window.updateEvent = async (id) => {
+      const name = prompt("Enter new name:");
+      const date = prompt("Enter new date (YYYY-MM-DD):");
+      const time = prompt("Enter new time (HH:MM):");
+      const location = prompt("Enter new location:");
+
+      if (name && date && time && location) {
+        try {
+          await updateDoc(doc(db, "events", id), {
+            name: name,
+            date: date,
+            time: time,
+            location: location
+          });
+          alert("Event updated successfully!");
+          fetchEvents(); // Refresh the events list
+        } catch (error) {
+          console.error("Error updating document: ", error);
+        }
+      }
+    };
+
+    // Delete event
+    window.deleteEvent = async (id) => {
+      if (confirm("Are you sure you want to delete this event?")) {
+        try {
+          await deleteDoc(doc(db, "events", id));
+          alert("Event deleted successfully!");
+          fetchEvents(); // Refresh the events list
+        } catch (error) {
+          console.error("Error deleting document: ", error);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
