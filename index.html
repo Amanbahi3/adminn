@@ -3,97 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <title>Punya Pantry Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root {
+      --primary-color: #FF8C00;
+      --secondary-color: #4285f4;
+      --text-color: #333;
+      --light-gray: #f4f4f4;
+      --border-color: #ddd;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .page-container {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      background-color: #f4f4f4;
+      min-height: 100vh;
     }
-    .container {
-      background: white;
-      padding: 20px;
-      margin: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 80%;
-      max-width: 600px;
+    
+    header {
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem 0;
+      text-align: center;
     }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    input, button {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .event {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-    }
-    .event:last-child {
-      border-bottom: none;
-    }
-    .google-btn {
-      background-color: #4285f4;
-      color: white;
+    
+    .header-content {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
+    
+    .logo {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+    }
+    
+    .app-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      overflow: hidden;
+    }
+    
+    .container-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .container-body {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #e67e00;
+    }
+    
+    .google-btn {
+      background-color: var(--secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 1rem auto;
+      max-width: 300px;
+    }
+    
+    .google-btn:hover {
+      background-color: #3367d6;
+    }
+    
     .google-btn img {
       width: 20px;
       height: 20px;
     }
+    
+    .section-title {
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .events-list {
+      margin-top: 1.5rem;
+    }
+    
+    .event-card {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .event-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+      width: auto;
+    }
+    
+    .btn-update {
+      background-color: var(--warning-color);
+      color: #212529;
+    }
+    
+    .btn-update:hover {
+      background-color: #e0a800;
+    }
+    
+    .btn-delete {
+      background-color: var(--danger-color);
+    }
+    
+    .btn-delete:hover {
+      background-color: #c82333;
+    }
+    
+    .event-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .event-detail {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .detail-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+    
+    .detail-value {
+      font-weight: 500;
+    }
+    
+    .event-image {
+      grid-column: span 2;
+      margin-top: 1rem;
+    }
+    
+    .event-image img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+    
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+    }
+    
+    .loading::after {
+      content: "";
+      width: 40px;
+      height: 40px;
+      border: 5px solid #ddd;
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .alert {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .user-name {
+      font-weight: 500;
+    }
+    
+    .logout-btn {
+      margin-left: auto;
+      background-color: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      width: auto;
+      padding: 0.4rem 0.8rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #f8f9fa;
+    }
+    
+    @media (max-width: 768px) {
+      .event-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .event-image {
+        grid-column: span 1;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container" id="loginContainer">
-    <h1>Admin Login</h1>
-    <button class="google-btn" id="googleLoginBtn">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
-      Login with Google
-    </button>
-  </div>
+  <div class="page-container">
+    <header>
+      <div class="header-content">
+        <img src=" https://nulyffoundation.org/WhatsApp%20Image%202025-01-17%20at%204.38.04%20PM.jpeg" alt="Punya Pantry Logo" class="logo">
+        <h1 class="app-title">Punya Pantry Admin</h1>
+      </div>
+    </header>
+    
+    <div class="main-content">
+      <div class="container" id="loginContainer">
+        <div class="container-header">
+          <h2>Admin Login</h2>
+        </div>
+        <div class="container-body">
+          <p style="text-align: center; margin-bottom: 1.5rem;">Please sign in with your admin account to manage events</p>
+          <button class="google-btn" id="googleLoginBtn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+            Sign in with Google
+          </button>
+        </div>
+      </div>
 
-  <div class="container" id="adminContainer" style="display: none;">
-    <h1>Admin Panel</h1>
-    <form id="eventForm">
-      <label for="eventName">Name:</label>
-      <input type="text" id="eventName" required>
-      <label for="eventDate">Date:</label>
-      <input type="date" id="eventDate" required>
-      <label for="eventTime">Time:</label>
-      <input type="time" id="eventTime" required>
-      <label for="eventLocation">Location:</label>
-      <input type="text" id="eventLocation" required>
-      <label for="eventPictureUrl">Picture URL:</label>
-      <input type="url" id="eventPictureUrl" required>
-      <button type="submit">Add Event</button>
-    </form>
-    <h2>Events List</h2>
-    <div id="eventsList"></div>
+      <div class="container" id="adminContainer" style="display: none;">
+        <div class="container-header">
+          <h2>Event Management Dashboard</h2>
+        </div>
+        <div class="container-body">
+          <div id="alertBox" class="alert"></div>
+          
+          <div class="user-info" id="userInfoSection">
+            <!-- User info will be populated here -->
+          </div>
+          
+          <h3 class="section-title">Add New Event</h3>
+          <form id="eventForm">
+            <div class="form-group">
+              <label for="eventName">Event Name:</label>
+              <input type="text" id="eventName" placeholder="Enter event name" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventDate">Date:</label>
+              <input type="date" id="eventDate" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventTime">Time:</label>
+              <input type="time" id="eventTime" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventLocation">Location:</label>
+              <input type="text" id="eventLocation" placeholder="Enter event location" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventPictureUrl">Picture URL:</label>
+              <input type="url" id="eventPictureUrl" placeholder="https://example.com/image.jpg" required>
+            </div>
+            
+            <button type="submit">
+              <i class="fas fa-plus"></i> Add Event
+            </button>
+          </form>
+          
+          <h3 class="section-title">Manage Events</h3>
+          <div id="eventsList" class="events-list">
+            <div class="loading"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module">
     // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
     // Your web app's Firebase configuration
     const firebaseConfig = {
@@ -110,27 +418,82 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
+    
+    // DOM Elements
+    const loginContainer = document.getElementById("loginContainer");
+    const adminContainer = document.getElementById("adminContainer");
+    const userInfoSection = document.getElementById("userInfoSection");
+    const alertBox = document.getElementById("alertBox");
+    const eventsList = document.getElementById("eventsList");
+    
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email === 'amanmandal4072018@gmail.com') {
+        // User is signed in and is admin
+        showAdminPanel(user);
+      } else if (user) {
+        // User is signed in but not admin
+        showAlert("You do not have admin privileges.", "danger");
+        auth.signOut();
+      } else {
+        // User is signed out
+        showLoginPanel();
+      }
+    });
 
     // Google Login
     document.getElementById("googleLoginBtn").addEventListener("click", async () => {
       try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-        const idToken = await user.getIdToken();
-
-        // Check if the user's email is the admin email
-        if (user.email === 'amanmandal4072018@gmail.com') {
-          document.getElementById("loginContainer").style.display = "none";
-          document.getElementById("adminContainer").style.display = "block";
-          fetchEvents(idToken); // Fetch events after login
-        } else {
-          alert("Access denied: You do not have admin privileges.");
-          auth.signOut(); // Sign out the user if not an admin
-        }
+        await signInWithPopup(auth, googleProvider);
+        // Auth state change listener will handle the rest
       } catch (error) {
-        alert("Google login failed: " + error.message);
+        showAlert(`Login failed: ${error.message}`, "danger");
       }
     });
+
+    // Show admin panel
+    function showAdminPanel(user) {
+      loginContainer.style.display = "none";
+      adminContainer.style.display = "block";
+      
+      // Display user info
+      userInfoSection.innerHTML = `
+        <img src="${user.photoURL}" alt="${user.displayName}" class="user-avatar">
+        <div>
+          <div class="user-name">${user.displayName}</div>
+          <div style="font-size: 0.9rem; color: #666;">${user.email}</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      `;
+      
+      // Add logout event listener
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        auth.signOut();
+      });
+      
+      // Fetch events
+      fetchEvents();
+    }
+
+    // Show login panel
+    function showLoginPanel() {
+      loginContainer.style.display = "block";
+      adminContainer.style.display = "none";
+    }
+
+    // Show alert message
+    function showAlert(message, type) {
+      alertBox.textContent = message;
+      alertBox.className = `alert alert-${type}`;
+      alertBox.style.display = "block";
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 5000);
+    }
 
     // Add new event
     document.getElementById("eventForm").addEventListener("submit", async (e) => {
@@ -141,9 +504,10 @@
       const time = document.getElementById("eventTime").value;
       const location = document.getElementById("eventLocation").value;
       const pictureUrl = document.getElementById("eventPictureUrl").value;
-      const idToken = await auth.currentUser.getIdToken();
-
+      
       try {
+        const idToken = await auth.currentUser.getIdToken();
+        
         const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
           method: 'POST',
           headers: {
@@ -154,23 +518,25 @@
         });
 
         if (response.ok) {
-          alert("Event added successfully!");
-          fetchEvents(idToken); // Refresh the events list
+          showAlert("Event added successfully!", "success");
+          document.getElementById("eventForm").reset();
+          fetchEvents();
         } else {
           const errorText = await response.text();
-          alert(`Failed to add event: ${errorText}`);
+          showAlert(`Failed to add event: ${errorText}`, "danger");
         }
       } catch (error) {
-        console.error("Error adding event: ", error);
+        showAlert(`Error: ${error.message}`, "danger");
       }
     });
 
     // Fetch and display all events
-    async function fetchEvents(idToken) {
-      const eventsList = document.getElementById("eventsList");
-      eventsList.innerHTML = ""; // Clear existing content
+    async function fetchEvents() {
+      eventsList.innerHTML = '<div class="loading"></div>';
 
       try {
+        const idToken = await auth.currentUser.getIdToken();
+        
         const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
           headers: {
             'Authorization': `Bearer ${idToken}`
@@ -179,67 +545,197 @@
 
         if (response.ok) {
           const events = await response.json();
+          
+          if (events.length === 0) {
+            eventsList.innerHTML = '<p style="text-align: center; color: #666;">No events found. Add your first event above.</p>';
+            return;
+          }
+          
+          eventsList.innerHTML = '';
+          
           events.forEach((event) => {
-            const eventDiv = document.createElement("div");
-            eventDiv.className = "event";
-            eventDiv.innerHTML = `
-              <p><strong>Name:</strong> ${event.name}</p>
-              <p><strong>Date:</strong> ${event.date}</p>
-              <p><strong>Time:</strong> ${event.time}</p>
-              <p><strong>Location:</strong> ${event.location}</p>
-              <button onclick="updateEvent('${event.id}')">Update</button>
-              <button onclick="deleteEvent('${event.id}')">Delete</button>
+            const formattedDate = formatDate(event.date);
+            const formattedTime = formatTime(event.time);
+            
+            const eventCard = document.createElement("div");
+            eventCard.className = "event-card";
+            eventCard.innerHTML = `
+              <div class="event-header">
+                <div class="event-title">${event.name}</div>
+                <div class="event-actions">
+                  <button class="btn-sm btn-update" onclick="updateEvent('${event.id}')">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <button class="btn-sm btn-delete" onclick="deleteEvent('${event.id}')">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+              <div class="event-details">
+                <div class="event-detail">
+                  <div class="detail-label">Date</div>
+                  <div class="detail-value">${formattedDate || "Not specified"}</div>
+                </div>
+                <div class="event-detail">
+                  <div class="detail-label">Time</div>
+                  <div class="detail-value">${formattedTime || "Not specified"}</div>
+                </div>
+                <div class="event-detail">
+                  <div class="detail-label">Location</div>
+                  <div class="detail-value">${event.location || "Not specified"}</div>
+                </div>
+                <div class="event-image">
+                  <img src="${event.pictureUrl}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">
+                </div>
+              </div>
             `;
-            eventsList.appendChild(eventDiv);
+            eventsList.appendChild(eventCard);
           });
         } else {
           const errorText = await response.text();
-          alert(`Failed to fetch events: ${errorText}`);
+          showAlert(`Failed to fetch events: ${errorText}`, "danger");
         }
       } catch (error) {
-        console.error("Error fetching events: ", error);
+        showAlert(`Error: ${error.message}`, "danger");
       }
     }
 
-    // Update event
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return null;
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    // Format time
+    function formatTime(timeString) {
+      if (!timeString) return null;
+      const [hours, minutes] = timeString.split(':');
+      const date = new Date(2000, 0, 1, hours, minutes);
+      return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
+    }
+
+    // Update event - Expose to global scope
     window.updateEvent = async (id) => {
-      const name = prompt("Enter new name:");
-      const date = prompt("Enter new date (YYYY-MM-DD):");
-      const time = prompt("Enter new time (HH:MM):");
-      const location = prompt("Enter new location:");
-      const pictureUrl = prompt("Enter new picture URL:");
-      const idToken = await auth.currentUser.getIdToken();
-
-      if (name && date && time && location && pictureUrl) {
-        try {
-          const response = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({ name, date, time, location, pictureUrl })
-          });
-
-          if (response.ok) {
-            alert("Event updated successfully!");
-            fetchEvents(idToken); // Refresh the events list
-          } else {
-            const errorText = await response.text();
-            alert(`Failed to update event: ${errorText}`);
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+        
+        // First fetch the current event data
+        const response = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${idToken}`
           }
-        } catch (error) {
-          console.error("Error updating event: ", error);
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch event details');
         }
+        
+        const event = await response.json();
+        
+        // Create a modal for updating
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+        
+        modal.innerHTML = `
+          <div style="background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Update Event</h3>
+            <form id="updateForm">
+              <div class="form-group">
+                <label for="updateName">Event Name:</label>
+                <input type="text" id="updateName" value="${event.name || ''}" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="updateDate">Date:</label>
+                <input type="date" id="updateDate" value="${event.date || ''}" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="updateTime">Time:</label>
+                <input type="time" id="updateTime" value="${event.time || ''}" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="updateLocation">Location:</label>
+                <input type="text" id="updateLocation" value="${event.location || ''}" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="updatePictureUrl">Picture URL:</label>
+                <input type="url" id="updatePictureUrl" value="${event.pictureUrl || ''}" required>
+              </div>
+              
+              <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="button" id="cancelUpdate" style="background-color: #6c757d;">Cancel</button>
+                <button type="submit" style="background-color: var(--warning-color); color: #212529;">Update Event</button>
+              </div>
+            </form>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Cancel button event
+        document.getElementById('cancelUpdate').addEventListener('click', () => {
+          document.body.removeChild(modal);
+        });
+        
+        // Update form submission
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const updatedEvent = {
+            name: document.getElementById('updateName').value,
+            date: document.getElementById('updateDate').value,
+            time: document.getElementById('updateTime').value,
+            location: document.getElementById('updateLocation').value,
+            pictureUrl: document.getElementById('updatePictureUrl').value
+          };
+          
+          try {
+            const updateResponse = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+              },
+              body: JSON.stringify(updatedEvent)
+            });
+            
+            if (updateResponse.ok) {
+              showAlert("Event updated successfully!", "success");
+              fetchEvents();
+              document.body.removeChild(modal);
+            } else {
+              const errorText = await updateResponse.text();
+              showAlert(`Failed to update event: ${errorText}`, "danger");
+            }
+          } catch (error) {
+            showAlert(`Error: ${error.message}`, "danger");
+          }
+        });
+        
+      } catch (error) {
+        showAlert(`Error: ${error.message}`, "danger");
       }
     };
 
-    // Delete event
+    // Delete event - Expose to global scope
     window.deleteEvent = async (id) => {
-      const idToken = await auth.currentUser.getIdToken();
-
-      if (confirm("Are you sure you want to delete this event?")) {
+      if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
         try {
+          const idToken = await auth.currentUser.getIdToken();
+          
           const response = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
             method: 'DELETE',
             headers: {
@@ -248,14 +744,14 @@
           });
 
           if (response.ok) {
-            alert("Event deleted successfully!");
-            fetchEvents(idToken); // Refresh the events list
+            showAlert("Event deleted successfully!", "success");
+            fetchEvents();
           } else {
             const errorText = await response.text();
-            alert(`Failed to delete event: ${errorText}`);
+            showAlert(`Failed to delete event: ${errorText}`, "danger");
           }
         } catch (error) {
-          console.error("Error deleting event: ", error);
+          showAlert(`Error: ${error.message}`, "danger");
         }
       }
     };
