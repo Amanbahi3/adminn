@@ -198,6 +198,7 @@
 
       try {
         const idToken = await auth.currentUser.getIdToken();
+        console.log("ID Token:", idToken); // Debugging: Check if token is retrieved
 
         const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
           method: 'POST',
@@ -224,6 +225,7 @@
           showAlert(`Failed to add event: ${errorText}`, "danger");
         }
       } catch (error) {
+        console.error("Error adding event:", error); // Debugging: Log error details
         showAlert(`Error: ${error.message}`, "danger");
       }
     });
@@ -244,6 +246,7 @@
 
       try {
         const idToken = await auth.currentUser.getIdToken();
+        console.log("ID Token for fetching events:", idToken); // Debugging: Check if token is retrieved
 
         const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
           headers: {
@@ -253,6 +256,7 @@
 
         if (response.ok) {
           const events = await response.json();
+          console.log("Fetched events:", events); // Debugging: Check fetched events
 
           if (events.length === 0) {
             eventsList.innerHTML = '<p style="text-align: center; color: #666;">No events found. Add your first event above.</p>';
@@ -298,9 +302,11 @@
           });
         } else {
           const errorText = await response.text();
+          console.error("Failed to fetch events:", errorText); // Debugging: Log error details
           showAlert(`Failed to fetch events: ${errorText}`, "danger");
         }
       } catch (error) {
+        console.error("Error fetching events:", error); // Debugging: Log error details
         showAlert(`Error: ${error.message}`, "danger");
       }
     }
@@ -325,6 +331,7 @@
       if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
         try {
           const idToken = await auth.currentUser.getIdToken();
+          console.log("ID Token for deleting event:", idToken); // Debugging: Check if token is retrieved
 
           const response = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
             method: 'DELETE',
@@ -338,9 +345,11 @@
             fetchEvents();
           } else {
             const errorText = await response.text();
+            console.error("Failed to delete event:", errorText); // Debugging: Log error details
             showAlert(`Failed to delete event: ${errorText}`, "danger");
           }
         } catch (error) {
+          console.error("Error deleting event:", error); // Debugging: Log error details
           showAlert(`Error: ${error.message}`, "danger");
         }
       }
