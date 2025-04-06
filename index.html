@@ -6,370 +6,7 @@
   <title>Punya Pantry Admin Panel</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root {
-      --primary-color: #FF8C00;
-      --secondary-color: #4285f4;
-      --text-color: #333;
-      --light-gray: #f4f4f4;
-      --border-color: #ddd;
-      --success-color: #28a745;
-      --danger-color: #dc3545;
-      --warning-color: #ffc107;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--light-gray);
-      color: var(--text-color);
-      line-height: 1.6;
-    }
-
-    .page-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 1rem 0;
-      text-align: center;
-    }
-
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .logo {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-    }
-
-    .app-title {
-      font-size: 1.8rem;
-      color: var(--primary-color);
-      font-weight: bold;
-    }
-
-    .main-content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 2rem 1rem;
-    }
-
-    .container {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-      overflow: hidden;
-    }
-
-    .container-header {
-      background-color: var(--primary-color);
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .container-body {
-      padding: 2rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
-    }
-
-    button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #e67e00;
-    }
-
-    .google-btn {
-      background-color: var(--secondary-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin: 1rem auto;
-      max-width: 300px;
-    }
-
-    .google-btn:hover {
-      background-color: #3367d6;
-    }
-
-    .google-btn img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .section-title {
-      margin: 2rem 0 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--primary-color);
-      color: var(--primary-color);
-    }
-
-    .events-list {
-      margin-top: 1.5rem;
-    }
-
-    .event-card {
-      background-color: white;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .event-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .event-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-
-    .event-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.9rem;
-      width: auto;
-    }
-
-    .btn-delete {
-      background-color: var(--danger-color);
-    }
-
-    .btn-delete:hover {
-      background-color: #c82333;
-    }
-
-    .event-details {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-
-    .event-detail {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .detail-label {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.25rem;
-    }
-
-    .detail-value {
-      font-weight: 500;
-    }
-
-    .event-image {
-      grid-column: span 2;
-      margin-top: 1rem;
-    }
-
-    .event-image img {
-      max-width: 100%;
-      max-height: 200px;
-      border-radius: 4px;
-      object-fit: cover;
-    }
-
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100px;
-    }
-
-    .loading::after {
-      content: "";
-      width: 40px;
-      height: 40px;
-      border: 5px solid #ddd;
-      border-top: 5px solid var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .alert {
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 4px;
-      display: none;
-    }
-
-    .alert-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .alert-danger {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1.5rem;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .user-name {
-      font-weight: 500;
-    }
-
-    .logout-btn {
-      margin-left: auto;
-      background-color: transparent;
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
-      width: auto;
-      padding: 0.4rem 0.8rem;
-    }
-
-    .logout-btn:hover {
-      background-color: #f8f9fa;
-    }
-
-    /* Improved responsive styles */
-    @media (max-width: 768px) {
-      .container-body {
-        padding: 1rem;
-      }
-
-      .event-details {
-        grid-template-columns: 1fr;
-      }
-
-      .event-image {
-        grid-column: 1;
-      }
-
-      .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: center;
-        gap: 5px;
-      }
-
-      .logout-btn {
-        margin-left: 0;
-        margin-top: 10px;
-        width: 100%;
-      }
-
-      .app-title {
-        font-size: 1.4rem;
-      }
-
-      .section-title {
-        font-size: 1.2rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container-header {
-        padding: 1rem;
-      }
-
-      .container-body {
-        padding: 0.75rem;
-      }
-
-      .event-card {
-        padding: 1rem;
-      }
-
-      input, button {
-        padding: 0.6rem;
-      }
-
-      .event-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      .event-actions {
-        width: 100%;
-      }
-
-      .btn-sm {
-        width: 100%;
-      }
-    }
+    /* Your existing styles */
   </style>
 </head>
 <body>
@@ -429,16 +66,8 @@
             </div>
 
             <div class="form-group">
-              <label for="eventLocationUrl">Location URL:</label>
-              <input type="url" id="eventLocationUrl" placeholder="https://example.com/location" required>
-            </div>
-
-            <div id="imageUrlsContainer">
-              <div class="form-group">
-                <label for="eventPictureUrls">Picture URLs:</label>
-                <input type="url" name="eventPictureUrls" placeholder="https://example.com/image.jpg" required>
-                <button type="button" onclick="addImageUrlField()">Add Another Image URL</button>
-              </div>
+              <label for="eventPictureUrl">Picture URL:</label>
+              <input type="url" id="eventPictureUrl" placeholder="https://example.com/image.jpg" required>
             </div>
 
             <button type="submit">
@@ -454,192 +83,246 @@
       </div>
     </div>
   </div>
-<script>// Import Firebase functions
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyD1NcfC-IjVXwaxMZG0kjn35L2zT6C5UJk",
-  authDomain: "bhandra-1fd1b.firebaseapp.com",
-  projectId: "bhandra-1fd1b",
-  storageBucket: "bhandra-1fd1b.appspot.com",
-  messagingSenderId: "643089692619",
-  appId: "1:643089692619:web:1d8d430ce550ab19d1e84e",
-  measurementId: "G-RJNF23H1J8"
-};
+  <script type="module">
+    // Import Firebase functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1NcfC-IjVXwaxMZG0kjn35L2zT6C5UJk",
+      authDomain: "bhandra-1fd1b.firebaseapp.com",
+      projectId: "bhandra-1fd1b",
+      storageBucket: "bhandra-1fd1b.appspot.com",
+      messagingSenderId: "643089692619",
+      appId: "1:643089692619:web:1d8d430ce550ab19d1e84e",
+      measurementId: "G-RJNF23H1J8"
+    };
 
-// DOM Elements
-const loginContainer = document.getElementById("loginContainer");
-const adminContainer = document.getElementById("adminContainer");
-const userInfoSection = document.getElementById("userInfoSection");
-const alertBox = document.getElementById("alertBox");
-const eventsList = document.getElementById("eventsList");
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
-// Check authentication state
-onAuthStateChanged(auth, (user) => {
-  if (user && user.email === 'amanmandal4072018@gmail.com') {
-    // User is signed in and is admin
-    showAdminPanel(user);
-  } else if (user) {
-    // User is signed in but not admin
-    showAlert("You do not have admin privileges.", "danger");
-    auth.signOut();
-  } else {
-    // User is signed out
-    showLoginPanel();
-  }
-});
+    // DOM Elements
+    const loginContainer = document.getElementById("loginContainer");
+    const adminContainer = document.getElementById("adminContainer");
+    const userInfoSection = document.getElementById("userInfoSection");
+    const alertBox = document.getElementById("alertBox");
+    const eventsList = document.getElementById("eventsList");
 
-// Google Login
-document.getElementById("googleLoginBtn").addEventListener("click", async () => {
-  try {
-    await signInWithPopup(auth, googleProvider);
-  } catch (error) {
-    showAlert(`Login failed: ${error.message}`, "danger");
-  }
-});
-
-// Show admin panel
-function showAdminPanel(user) {
-  loginContainer.style.display = "none";
-  adminContainer.style.display = "block";
-
-  // Display user info
-  userInfoSection.innerHTML = `
-    <img src="${user.photoURL}" alt="${user.displayName}" class="user-avatar">
-    <div>
-      <div class="user-name">${user.displayName}</div>
-      <div style="font-size: 0.9rem; color: #666;">${user.email}</div>
-    </div>
-    <button class="logout-btn" id="logoutBtn">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  `;
-
-  // Add logout event listener
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    auth.signOut();
-  });
-
-  // Fetch events
-  fetchEvents();
-}
-
-// Show login panel
-function showLoginPanel() {
-  loginContainer.style.display = "block";
-  adminContainer.style.display = "none";
-}
-
-// Show alert message
-function showAlert(message, type) {
-  alertBox.textContent = message;
-  alertBox.className = `alert alert-${type}`;
-  alertBox.style.display = "block";
-
-  // Auto hide after 5 seconds
-  setTimeout(() => {
-    alertBox.style.display = "none";
-  }, 5000);
-}
-
-// Fetch and display all events
-async function fetchEvents() {
-  eventsList.innerHTML = '<div class="loading"></div>';
-
-  try {
-    const eventsRef = collection(db, 'events');
-    const snapshot = await getDocs(eventsRef);
-    const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-    if (events.length === 0) {
-      eventsList.innerHTML = '<p style="text-align: center; color: #666;">No events found. Add your first event above.</p>';
-      return;
-    }
-
-    eventsList.innerHTML = '';
-
-    events.forEach((event) => {
-      const formattedDate = formatDate(event.date);
-      const formattedTime = formatTime(event.time);
-
-      const eventCard = document.createElement("div");
-      eventCard.className = "event-card";
-      eventCard.innerHTML = `
-        <div class="event-header">
-          <div class="event-title">${event.name}</div>
-          <div class="event-actions">
-            <button class="btn-sm btn-delete" onclick="deleteEvent('${event.id}')">
-              <i class="fas fa-trash"></i> Delete
-            </button>
-          </div>
-        </div>
-        <div class="event-details">
-          <div class="event-detail">
-            <div class="detail-label">Date</div>
-            <div class="detail-value">${formattedDate || "Not specified"}</div>
-          </div>
-          <div class="event-detail">
-            <div class="detail-label">Time</div>
-            <div class="detail-value">${formattedTime || "Not specified"}</div>
-          </div>
-          <div class="event-detail">
-            <div class="detail-label">Location</div>
-            <div class="detail-value">${event.location || "Not specified"}</div>
-          </div>
-          <div class="event-detail">
-            <div class="detail-label">Location URL</div>
-            <div class="detail-value"><a href="${event.locationUrl}" target="_blank">View Location</a></div>
-          </div>
-          <div class="event-image">
-            ${event.pictureUrls.map(url => `<img src="${url}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">`).join('')}
-          </div>
-        </div>
-      `;
-      eventsList.appendChild(eventCard);
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email === 'amanmandal4072018@gmail.com') {
+        // User is signed in and is admin
+        showAdminPanel(user);
+      } else if (user) {
+        // User is signed in but not admin
+        showAlert("You do not have admin privileges.", "danger");
+        auth.signOut();
+      } else {
+        // User is signed out
+        showLoginPanel();
+      }
     });
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    showAlert(`Error fetching events: ${error.message}`, "danger");
-  }
-}
 
-// Format date
-function formatDate(dateString) {
-  if (!dateString) return null;
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-}
+    // Google Login
+    document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+      try {
+        await signInWithPopup(auth, googleProvider);
+        // Auth state change listener will handle the rest
+      } catch (error) {
+        showAlert(`Login failed: ${error.message}`, "danger");
+      }
+    });
 
-// Format time
-function formatTime(timeString) {
-  if (!timeString) return null;
-  const [hours, minutes] = timeString.split(':');
-  const date = new Date(2000, 0, 1, hours, minutes);
-  return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
-}
+    // Show admin panel
+    function showAdminPanel(user) {
+      loginContainer.style.display = "none";
+      adminContainer.style.display = "block";
 
-// Delete event - Expose to global scope
-window.deleteEvent = async (id) => {
-  if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
-    try {
-      await db.collection('events').doc(id).delete();
-      showAlert("Event deleted successfully!", "success");
+      // Display user info
+      userInfoSection.innerHTML = `
+        <img src="${user.photoURL}" alt="${user.displayName}" class="user-avatar">
+        <div>
+          <div class="user-name">${user.displayName}</div>
+          <div style="font-size: 0.9rem; color: #666;">${user.email}</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      `;
+
+      // Add logout event listener
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        auth.signOut();
+      });
+
+      // Fetch events
       fetchEvents();
-    } catch (error) {
-      showAlert(`Error deleting event: ${error.message}`, "danger");
     }
-  }
-};
-</script>
- 
+
+    // Show login panel
+    function showLoginPanel() {
+      loginContainer.style.display = "block";
+      adminContainer.style.display = "none";
+    }
+
+    // Show alert message
+    function showAlert(message, type) {
+      alertBox.textContent = message;
+      alertBox.className = `alert alert-${type}`;
+      alertBox.style.display = "block";
+
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 5000);
+    }
+
+    // Add new event
+    document.getElementById("eventForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("eventName").value;
+      const date = document.getElementById("eventDate").value;
+      const time = document.getElementById("eventTime").value;
+      const location = document.getElementById("eventLocation").value;
+      const pictureUrl = document.getElementById("eventPictureUrl").value;
+
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+
+        const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
+          body: JSON.stringify({ name, date, time, location, pictureUrl })
+        });
+
+        if (response.ok) {
+          showAlert("Event added successfully!", "success");
+          document.getElementById("eventForm").reset();
+          fetchEvents();
+        } else {
+          const errorText = await response.text();
+          showAlert(`Failed to add event: ${errorText}`, "danger");
+        }
+      } catch (error) {
+        showAlert(`Error: ${error.message}`, "danger");
+      }
+    });
+
+    // Fetch and display all events
+    async function fetchEvents() {
+      eventsList.innerHTML = '<div class="loading"></div>';
+
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+
+        const response = await fetch('https://backend-1-gfaq.onrender.com/events', {
+          headers: {
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+
+        if (response.ok) {
+          const events = await response.json();
+
+          if (events.length === 0) {
+            eventsList.innerHTML = '<p style="text-align: center; color: #666;">No events found. Add your first event above.</p>';
+            return;
+          }
+
+          eventsList.innerHTML = '';
+
+          events.forEach((event) => {
+            const formattedDate = formatDate(event.date);
+            const formattedTime = formatTime(event.time);
+
+            const eventCard = document.createElement("div");
+            eventCard.className = "event-card";
+            eventCard.innerHTML = `
+              <div class="event-header">
+                <div class="event-title">${event.name}</div>
+                <div class="event-actions">
+                  <button class="btn-sm btn-delete" onclick="deleteEvent('${event.id}')">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+              <div class="event-details">
+                <div class="event-detail">
+                  <div class="detail-label">Date</div>
+                  <div class="detail-value">${formattedDate || "Not specified"}</div>
+                </div>
+                <div class="event-detail">
+                  <div class="detail-label">Time</div>
+                  <div class="detail-value">${formattedTime || "Not specified"}</div>
+                </div>
+                <div class="event-detail">
+                  <div class="detail-label">Location</div>
+                  <div class="detail-value">${event.location || "Not specified"}</div>
+                </div>
+                <div class="event-image">
+                  <img src="${event.pictureUrl}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">
+                </div>
+              </div>
+            `;
+            eventsList.appendChild(eventCard);
+          });
+        } else {
+          const errorText = await response.text();
+          showAlert(`Failed to fetch events: ${errorText}`, "danger");
+        }
+      } catch (error) {
+        showAlert(`Error: ${error.message}`, "danger");
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return null;
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    // Format time
+    function formatTime(timeString) {
+      if (!timeString) return null;
+      const [hours, minutes] = timeString.split(':');
+      const date = new Date(2000, 0, 1, hours, minutes);
+      return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
+    }
+
+    // Delete event - Expose to global scope
+    window.deleteEvent = async (id) => {
+      if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+        try {
+          const idToken = await auth.currentUser.getIdToken();
+
+          const response = await fetch(`https://backend-1-gfaq.onrender.com/events/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${idToken}`
+            }
+          });
+
+          if (response.ok) {
+            showAlert("Event deleted successfully!", "success");
+            fetchEvents();
+          } else {
+            const errorText = await response.text();
+            showAlert(`Failed to delete event: ${errorText}`, "danger");
+          }
+        } catch (error) {
+          showAlert(`Error: ${error.message}`, "danger");
+        }
+      }
+    };
+  </script>
 </body>
 </html>
