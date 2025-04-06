@@ -258,7 +258,7 @@
           const events = await response.json();
           console.log("Fetched events:", events); // Debugging: Check fetched events
 
-          if (events.length === 0) {
+          if (!Array.isArray(events) || events.length === 0) {
             eventsList.innerHTML = '<p style="text-align: center; color: #666;">No events found. Add your first event above.</p>';
             return;
           }
@@ -294,7 +294,7 @@
                   <div class="detail-value">${event.location || "Not specified"}</div>
                 </div>
                 <div class="event-image">
-                  ${event.pictureUrls.map(url => `<img src="${url}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">`).join('')}
+                  ${event.pictureUrls && event.pictureUrls.length > 0 ? event.pictureUrls.map(url => `<img src="${url}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">`).join('') : '<p>No images available</p>'}
                 </div>
               </div>
             `;
