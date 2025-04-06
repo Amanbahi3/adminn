@@ -65,9 +65,12 @@
               <input type="text" id="eventLocation" placeholder="Enter event location" required>
             </div>
 
-            <div class="form-group">
-              <label for="eventPictureUrl">Picture URL:</label>
-              <input type="url" id="eventPictureUrl" placeholder="https://example.com/image.jpg" required>
+            <div class="form-group" id="pictureUrlsContainer">
+              <label>Picture URLs:</label>
+              <input type="url" name="pictureUrls" placeholder="https://example.com/image.jpg" required>
+              <button type="button" id="addPictureUrlBtn">
+                <i class="fas fa-plus"></i> Add Another URL
+              </button>
             </div>
 
             <button type="submit">
@@ -111,6 +114,7 @@
     const userInfoSection = document.getElementById("userInfoSection");
     const alertBox = document.getElementById("alertBox");
     const eventsList = document.getElementById("eventsList");
+    const pictureUrlsContainer = document.getElementById("pictureUrlsContainer");
 
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
@@ -189,7 +193,8 @@
       const date = document.getElementById("eventDate").value;
       const time = document.getElementById("eventTime").value;
       const location = document.getElementById("eventLocation").value;
-      const pictureUrl = document.getElementById("eventPictureUrl").value;
+      const pictureUrls = Array.from(document.querySelectorAll("#pictureUrlsContainer input[name='pictureUrls']"))
+                                .map(input => input.value);
 
       try {
         const idToken = await auth.currentUser.getIdToken();
@@ -200,12 +205,19 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${idToken}`
           },
-          body: JSON.stringify({ name, date, time, location, pictureUrl })
+          body: JSON.stringify({ name, date, time, location, pictureUrls })
         });
 
         if (response.ok) {
           showAlert("Event added successfully!", "success");
           document.getElementById("eventForm").reset();
+          // Remove additional picture URL fields
+          const urlInputs = document.querySelectorAll("#pictureUrlsContainer input[name='pictureUrls']");
+          urlInputs.forEach((input, index) => {
+            if (index !== 0) {
+              input.remove();
+            }
+          });
           fetchEvents();
         } else {
           const errorText = await response.text();
@@ -214,6 +226,16 @@
       } catch (error) {
         showAlert(`Error: ${error.message}`, "danger");
       }
+    });
+
+    // Add another picture URL field
+    document.getElementById("addPictureUrlBtn").addEventListener("click", () => {
+      const newInput = document.createElement("input");
+      newInput.type = "url";
+      newInput.name = "pictureUrls";
+      newInput.placeholder = "https://example.com/image.jpg";
+      newInput.required = true;
+      pictureUrlsContainer.insertBefore(newInput, document.getElementById("addPictureUrlBtn"));
     });
 
     // Fetch and display all events
@@ -268,7 +290,7 @@
                   <div class="detail-value">${event.location || "Not specified"}</div>
                 </div>
                 <div class="event-image">
-                  <img src="${event.pictureUrl}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">
+                  ${event.pictureUrls.map(url => `<img src="${url}" alt="${event.name}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">`).join('')}
                 </div>
               </div>
             `;
