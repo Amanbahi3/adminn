@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Punya Pantry Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --primary: #4f46e5;
@@ -62,6 +63,7 @@
       height: 48px;
       border-radius: 8px;
       object-fit: cover;
+      background-color: var(--gray-100);
     }
 
     .app-title {
@@ -125,6 +127,7 @@
     .google-btn img {
       width: 24px;
       height: 24px;
+      border-radius: 50%;
     }
 
     .user-info {
@@ -142,6 +145,7 @@
       height: 48px;
       border-radius: 50%;
       object-fit: cover;
+      background-color: var(--gray-200);
     }
 
     .user-name {
@@ -290,15 +294,28 @@
       min-width: 80px;
     }
 
-    .event-image {
+    .event-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
       margin-top: 1rem;
     }
 
-    .event-image img {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
+    .event-image {
+      position: relative;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background-color: var(--gray-100);
       border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .event-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .btn-delete {
@@ -352,6 +369,10 @@
       .logout-btn {
         margin: 1rem auto 0;
       }
+
+      .event-images {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -372,7 +393,7 @@
         <div class="container-body">
           <p style="text-align: center; margin-bottom: 1.5rem;">Please sign in with your admin account to manage events</p>
           <button class="google-btn" id="googleLoginBtn">
-            <img src="https://yt3.googleusercontent.com/2eI1TjX447QZFDe6R32K0V2mjbVMKT5mIfQR-wK5bAsxttS_7qzUDS1ojoSKeSP0NuWd6sl7qQ=s900-c-k-c0x00ffffff-no-rj" alt="Google Logo">
+            <img src="https://www.google.com/favicon.ico" alt="Google Logo">
             Sign in with Google
           </button>
         </div>
@@ -489,7 +510,7 @@
       adminContainer.style.display = "block";
 
       userInfoSection.innerHTML = `
-        <img src="${user.photoURL}" alt="${user.displayName}" class="user-avatar">
+        <img src="${user.photoURL}" alt="${user.displayName}" class="user-avatar" onerror="this.src='https://via.placeholder.com/48x48?text=User'">
         <div>
           <div class="user-name">${user.displayName}</div>
           <div style="font-size: 0.9rem; color: #666;">${user.email}</div>
@@ -532,7 +553,8 @@
       const time = document.getElementById("eventTime").value;
       const location = document.getElementById("eventLocation").value;
       const pictureUrls = Array.from(document.querySelectorAll("#pictureUrlsContainer input[name='pictureUrls']"))
-                                .map(input => input.value);
+                                .map(input => input.value)
+                                .filter(url => url.trim() !== "");
 
       try {
         const idToken = await auth.currentUser.getIdToken();
@@ -622,12 +644,14 @@
                   <div class="detail-label">Location:</div>
                   <div class="detail-value">${event.location || "Not specified"}</div>
                 </div>
-                <div class="event-image">
+                <div class="event-images">
                   ${event.pictureUrls && event.pictureUrls.length > 0 ? 
                     event.pictureUrls.map(url => `
-                      <img src="${url}" 
-                           alt="${event.name}" 
-                           onerror="this.src='https://via.placeholder.com/400x200?text=No+Image+Available'">`
+                      <div class="event-image">
+                        <img src="${url}" 
+                             alt="${event.name}" 
+                             onerror="this.src='https://via.placeholder.com/400x225?text=Image+Not+Available'">
+                      </div>`
                     ).join('') : 
                     '<p>No images available</p>'
                   }
