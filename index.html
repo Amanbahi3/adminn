@@ -433,9 +433,12 @@
               <input type="url" id="eventLocationUrl" placeholder="https://example.com/location" required>
             </div>
 
-            <div class="form-group">
-              <label for="eventPictureUrls">Picture URLs (one per line):</label>
-              <textarea id="eventPictureUrls" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg" required></textarea>
+            <div id="imageUrlsContainer">
+              <div class="form-group">
+                <label for="eventPictureUrls">Picture URLs:</label>
+                <input type="url" name="eventPictureUrls" placeholder="https://example.com/image.jpg" required>
+                <button type="button" onclick="addImageUrlField()">Add Another Image URL</button>
+              </div>
             </div>
 
             <button type="submit">
@@ -479,6 +482,7 @@
     const userInfoSection = document.getElementById("userInfoSection");
     const alertBox = document.getElementById("alertBox");
     const eventsList = document.getElementById("eventsList");
+    const imageUrlsContainer = document.getElementById("imageUrlsContainer");
 
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
@@ -558,7 +562,8 @@
       const time = document.getElementById("eventTime").value;
       const location = document.getElementById("eventLocation").value;
       const locationUrl = document.getElementById("eventLocationUrl").value;
-      const pictureUrls = document.getElementById("eventPictureUrls").value.split('\n').map(url => url.trim()).filter(url => url);
+      const pictureUrlsElements = document.querySelectorAll('input[name="eventPictureUrls"]');
+      const pictureUrls = Array.from(pictureUrlsElements).map(input => input.value.trim()).filter(url => url);
 
       try {
         const idToken = await auth.currentUser.getIdToken();
@@ -575,6 +580,10 @@
         if (response.ok) {
           showAlert("Event added successfully!", "success");
           document.getElementById("eventForm").reset();
+          // Remove additional image URL fields
+          while (pictureUrlsElements.length > 1) {
+            pictureUrlsElements[1].remove();
+          }
           fetchEvents();
         } else {
           const errorText = await response.text();
@@ -584,6 +593,16 @@
         showAlert(`Error: ${error.message}`, "danger");
       }
     });
+
+    // Function to add another image URL field
+    window.addImageUrlField = function() {
+      const newField = document.createElement("input");
+      newField.type = "url";
+      newField.name = "eventPictureUrls";
+      newField.placeholder = "https://example.com/image.jpg";
+      newField.required = true;
+      imageUrlsContainer.appendChild(newField);
+    };
 
     // Fetch and display all events
     async function fetchEvents() {
